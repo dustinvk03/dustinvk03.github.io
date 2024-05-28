@@ -15,7 +15,7 @@
 
 #### Data Preprocessing
 
-We start by loading and preprocessing the dataset.
+We start by loading the dataset. To do that, we import the necessary libraries and then use pandas to read the df_movies csv file.
 
 ```python
 import pandas as pd
@@ -29,13 +29,17 @@ import matplotlib.pyplot as plt
 
 # Load dataset
 df_movies = pd.read_csv('./datasets/rotten_tomatoes_movies.csv')
-
+```
+Then we can define the features
+```python
 # Define feature categories
 numeric_columns = df_movies.describe().columns.tolist()
 categorical_columns = ['content_rating']
 ordinal_columns = ['audience_status']
 target = 'tomatometer_status'
-
+```
+Preprocessing pipelines pipeline with corresponding datatypes:
+```python
 # Preprocessing pipelines
 numeric_transformer = Pipeline(steps=[('scaler', StandardScaler())])
 categorical_transformer = Pipeline(steps=[('onehot', OneHotEncoder(handle_unknown='ignore'))])
@@ -48,7 +52,7 @@ preprocessor = ColumnTransformer(
         ('ord', ordinal_transformer, ordinal_columns)
     ]
 )
-
+```
 # Clean dataset
 df_no_na = df_movies.dropna(subset=numeric_columns + categorical_columns + ordinal_columns + [target])
 
