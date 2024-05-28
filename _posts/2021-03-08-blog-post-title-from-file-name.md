@@ -1,10 +1,59 @@
-## Blog Post Title From First Header
+## Rotten Tomatoes Movies Rating Prediction
 
-Due to a plugin called `jekyll-titles-from-headings` which is supported by GitHub Pages by default. The above header (in the markdown file) will be automatically used as the pages title.
+### Table of Contents
+1. First Approach: Predicting Movie Status Based on Numerical and Categorical Features
+   - Data Preprocessing
+   - Random Forest Classifier
+   - Random Forest Classifier with Feature Selection
+   - Weighted Random Forest Classifier with Feature Selection
+2. Second Approach: Predicting Movie Status Based on Review Sentiment
+   - Default Random Forest
+   - Weighted Random Forest
+   - Movie Status Prediction
 
-If the file does not start with a header, then the post title will be derived from the filename.
+### First Approach: Predicting Movie Status Based on Numerical and Categorical Features
 
-This is a sample blog post. You can talk about all sorts of fun things here.
+#### Data Preprocessing
+
+We start by loading and preprocessing the dataset.
+
+```python
+import pandas as pd
+import numpy as np
+from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import StandardScaler, OneHotEncoder, OrdinalEncoder
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+import matplotlib.pyplot as plt
+
+# Load dataset
+df_movies = pd.read_csv('./datasets/rotten_tomatoes_movies.csv')
+
+# Define feature categories
+numeric_columns = df_movies.describe().columns.tolist()
+categorical_columns = ['content_rating']
+ordinal_columns = ['audience_status']
+target = 'tomatometer_status'
+
+# Preprocessing pipelines
+numeric_transformer = Pipeline(steps=[('scaler', StandardScaler())])
+categorical_transformer = Pipeline(steps=[('onehot', OneHotEncoder(handle_unknown='ignore'))])
+ordinal_transformer = Pipeline(steps=[('ordinal', OrdinalEncoder())])
+
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', numeric_transformer, numeric_columns),
+        ('cat', categorical_transformer, categorical_columns),
+        ('ord', ordinal_transformer, ordinal_columns)
+    ]
+)
+
+# Clean dataset
+df_no_na = df_movies.dropna(subset=numeric_columns + categorical_columns + ordinal_columns + [target])
+
+  
+We start by loading and preprocessing the dataset.
 
 ---
 
